@@ -33,22 +33,22 @@ public class NumeralSystemConverter {
 
     static String ConvertIntegerPart(int sourceRadix, String integerPart, int targetRadix) {
         long integerPartDecimal = 0;
+        StringBuilder targetNumber = new StringBuilder();
         if (sourceRadix == 1 && targetRadix == 1) {
-            return integerPart;
+            targetNumber.append(integerPart);
         } else if (sourceRadix == 1) {
             integerPartDecimal += integerPart.length();
+            targetNumber.append(Long.toString(integerPartDecimal, targetRadix));
         } else if (targetRadix == 1) {
             integerPartDecimal += Long.parseLong(integerPart, sourceRadix);
-            StringBuilder targetNumber = new StringBuilder();
             for (long i = integerPartDecimal; i > 0; i--) {
                 targetNumber.append("1");
             }
-            return targetNumber.toString();
         } else {
             integerPartDecimal += Long.parseLong(integerPart, sourceRadix);
+            targetNumber.append(Long.toString(integerPartDecimal, targetRadix));
         }
-        String targetNumber = Long.toString(integerPartDecimal, targetRadix);
-        return targetNumber;
+        return targetNumber.toString();
     }
 
     static String ConvertFractionalPart(String fractionalPart) {
