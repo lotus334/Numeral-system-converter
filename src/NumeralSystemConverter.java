@@ -15,9 +15,9 @@ public class NumeralSystemConverter {
         if (IsThereFractional(sourceNumber)) {
             String integerPart = sourceNumber.split("\\.")[0];
             String fractionalPart = sourceNumber.split("\\.")[1];
-            String decimalInteger = ConvertIntegerPart(sourceRadix, integerPart, targetRadix);
-            String decimalFractional = ConvertFractionalPart(fractionalPart);
-            return String.join(".", decimalInteger, decimalFractional);
+            String convertedIntegerPart = ConvertIntegerPart(sourceRadix, integerPart, targetRadix);
+            String convertedFractionalPart = ConvertFractionalPart(fractionalPart);
+            return String.join(".", convertedIntegerPart, convertedFractionalPart);
         }
         return ConvertIntegerPart(sourceRadix, sourceNumber, targetRadix);
     }
