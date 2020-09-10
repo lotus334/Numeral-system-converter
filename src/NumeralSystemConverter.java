@@ -4,10 +4,34 @@ import java.util.Scanner;
 public class NumeralSystemConverter {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in).useLocale((Locale.US));
-        int sourceRadix = scanner.nextInt();
-        String sourceNumber = scanner.next();
-        int targetRadix = scanner.nextInt();
-        System.out.println(Converter(sourceRadix, sourceNumber, targetRadix));
+        int sourceRadix = 0;
+        String sourceNumber = "";
+        int targetRadix = 0;
+
+        if (scanner.hasNextInt()) {
+            sourceRadix = scanner.nextInt();
+        }
+        if (scanner.hasNext()) {
+            sourceNumber = scanner.next();
+        }
+        if (scanner.hasNextInt()) {
+            targetRadix = scanner.nextInt();
+        }
+        if (isInputValid(sourceRadix, sourceNumber, targetRadix)) {
+            System.out.println(Converter(sourceRadix, sourceNumber, targetRadix));
+        } else {
+            System.out.println("error");
+        }
+    }
+
+    static boolean isInputValid(int sourceRadix, String sourceNumber, int targetRadix) {
+        boolean isValid = true;
+        if (sourceRadix < 1 || sourceRadix > 36 || targetRadix < 1 || targetRadix > 36) {
+            isValid = false;
+        } else if (sourceNumber.isEmpty()) {
+            isValid = false;
+        }
+        return isValid;
     }
 
     static String Converter(int sourceRadix, String sourceNumber, int targetRadix) {
