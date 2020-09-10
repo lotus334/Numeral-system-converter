@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -16,7 +15,7 @@ public class NumeralSystemConverter {
             String integerPart = sourceNumber.split("\\.")[0];
             String fractionalPart = sourceNumber.split("\\.")[1];
             String convertedIntegerPart = ConvertIntegerPart(sourceRadix, integerPart, targetRadix);
-            String convertedFractionalPart = ConvertFractionalPart(fractionalPart);
+            String convertedFractionalPart = ConvertFractionalPart(sourceRadix, fractionalPart, targetRadix);
             return String.join(".", convertedIntegerPart, convertedFractionalPart);
         }
         return ConvertIntegerPart(sourceRadix, sourceNumber, targetRadix);
@@ -51,7 +50,24 @@ public class NumeralSystemConverter {
         return targetNumber.toString();
     }
 
-    static String ConvertFractionalPart(String fractionalPart) {
-        return fractionalPart;
+    static String ConvertFractionalPart(int sourceRadix, String fractionalPart, int targetRadix) {
+        double fractionalPartDecimal = 0;
+        StringBuilder targetFractionPart = new StringBuilder();
+        if (sourceRadix != 10) {
+            int temp = sourceRadix;
+            for (int i = 0; i < fractionalPart.length(); i++) {
+                fractionalPartDecimal += (Double.parseDouble(String.valueOf(Long.parseLong(String.valueOf(fractionalPart.charAt(i)), sourceRadix))) / temp);
+                temp *= sourceRadix;
+            }
+        } else {
+            fractionalPartDecimal += Double.parseDouble("0." + fractionalPart);
+        }
+        for (int i = 0; i < 5; i++) {
+            fractionalPartDecimal *= targetRadix;
+            targetFractionPart.append(Long.toString((long) fractionalPartDecimal, targetRadix));
+            fractionalPartDecimal -= (long) fractionalPartDecimal;
+        }
+
+        return String.valueOf(targetFractionPart);
     }
 }
