@@ -1,6 +1,13 @@
 import java.util.Locale;
 import java.util.Scanner;
+/*
+The program reading the source number in the given base and converting it to another given base.
 
+You must input three lines:
+The source radix;
+The source number;
+The target radix.
+ */
 public class NumeralSystemConverter {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in).useLocale((Locale.US));
