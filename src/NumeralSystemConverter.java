@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -6,58 +5,69 @@ public class NumeralSystemConverter {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in).useLocale((Locale.US));
         int sourceRadix = scanner.nextInt();
-        String sourceNum = scanner.next();
-        sourceNum += ".";
-        String[] str = sourceNum.split("\\.");
+        String sourceNumber = scanner.next();
         int targetRadix = scanner.nextInt();
-        boolean b1 = str[1].equals("");
-        if (sourceRadix != 1 && targetRadix != 1) {
-            if (b1) {
-                Long numDecimal = Long.parseLong(sourceNum, sourceRadix);
-                String numTarget = Long.toString(numDecimal, targetRadix);
-                System.out.println(numTarget);
-            }
-            else {
-                StringBuilder intPart = new StringBuilder();
-                StringBuilder fracPart = new StringBuilder();
+        System.out.println(Converter(sourceRadix, sourceNumber, targetRadix));
+    }
 
-                Long numDecimal = Long.parseLong(str[0], sourceRadix);
-                String numTarget = Long.toString(numDecimal, targetRadix);
-                intPart.append(numTarget);
+    static String Converter(int sourceRadix, String sourceNumber, int targetRadix) {
+        if (IsThereFractional(sourceNumber)) {
+            String integerPart = sourceNumber.split("\\.")[0];
+            String fractionalPart = sourceNumber.split("\\.")[1];
+            String convertedIntegerPart = ConvertIntegerPart(sourceRadix, integerPart, targetRadix);
+            String convertedFractionalPart = ConvertFractionalPart(sourceRadix, fractionalPart, targetRadix);
+            return String.join(".", convertedIntegerPart, convertedFractionalPart);
+        }
+        return ConvertIntegerPart(sourceRadix, sourceNumber, targetRadix);
+    }
 
-                double numFrac = 0;
-                if (sourceRadix != 10) {
-                    int permBase = sourceRadix;
-                    for (int i = 0; i < str[1].length(); i++) {
-                        numFrac += Double.parseDouble(String.valueOf(Long.parseLong(String.valueOf(str[1].charAt(i)), sourceRadix))) / permBase;
-                        permBase *= sourceRadix;
-                    }
-                } else {
-                    numFrac += Double.parseDouble(str[1]) / (Math.pow(10, String.valueOf(Integer.parseInt(str[1])).length()));
-                }
-
-                for (int i = 0; i < 5; i++) {
-                    numFrac *= targetRadix;
-                    String permTarget = Long.toString((long) numFrac, targetRadix);
-                    fracPart.append(permTarget);
-                    numFrac -= (long) numFrac;
-                }
-
-                System.out.println(intPart + "." + fracPart);
-            }
-        } else if (sourceRadix == 1) {
-            if (b1) {
-                long numDecimal = (sourceNum).length();
-                String numTarget = Long.toString(numDecimal, targetRadix);
-                System.out.println(numTarget);
-            }
-        } else if (targetRadix == 1) {
-            if (b1) {
-                long numDecimal = Long.parseLong((sourceNum), sourceRadix);
-                for (int i = (int) numDecimal; i > 0; i--) {
-                    System.out.print(1);
-                }
+    static boolean IsThereFractional(String sourceNumber) {
+        for (int i = 0; i < sourceNumber.length(); i++) {
+            if (sourceNumber.charAt(i) == '.') {
+                return true;
             }
         }
+        return false;
+    }
+
+    static String ConvertIntegerPart(int sourceRadix, String integerPart, int targetRadix) {
+        long integerPartDecimal = 0;
+        StringBuilder targetNumber = new StringBuilder();
+        if (sourceRadix == 1 && targetRadix == 1) {
+            targetNumber.append(integerPart);
+        } else if (sourceRadix == 1) {
+            integerPartDecimal += integerPart.length();
+            targetNumber.append(Long.toString(integerPartDecimal, targetRadix));
+        } else if (targetRadix == 1) {
+            integerPartDecimal += Long.parseLong(integerPart, sourceRadix);
+            for (long i = integerPartDecimal; i > 0; i--) {
+                targetNumber.append("1");
+            }
+        } else {
+            integerPartDecimal += Long.parseLong(integerPart, sourceRadix);
+            targetNumber.append(Long.toString(integerPartDecimal, targetRadix));
+        }
+        return targetNumber.toString();
+    }
+
+    static String ConvertFractionalPart(int sourceRadix, String fractionalPart, int targetRadix) {
+        double fractionalPartDecimal = 0;
+        StringBuilder targetFractionPart = new StringBuilder();
+        if (sourceRadix != 10) {
+            int temp = sourceRadix;
+            for (int i = 0; i < fractionalPart.length(); i++) {
+                fractionalPartDecimal += (Double.parseDouble(String.valueOf(Long.parseLong(String.valueOf(fractionalPart.charAt(i)), sourceRadix))) / temp);
+                temp *= sourceRadix;
+            }
+        } else {
+            fractionalPartDecimal += Double.parseDouble("0." + fractionalPart);
+        }
+        for (int i = 0; i < 5; i++) {
+            fractionalPartDecimal *= targetRadix;
+            targetFractionPart.append(Long.toString((long) fractionalPartDecimal, targetRadix));
+            fractionalPartDecimal -= (long) fractionalPartDecimal;
+        }
+
+        return String.valueOf(targetFractionPart);
     }
 }
